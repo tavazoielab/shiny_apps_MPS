@@ -1176,6 +1176,58 @@
         "Archs": "x64"
       }
     },
+    "aws.s3": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "aws.s3",
+        "Type": "Package",
+        "Title": "'AWS S3' Client Package",
+        "Version": "0.3.22",
+        "Authors@R": "c(person(\"Thomas J.\", \"Leeper\", role = \"aut\",\n                    email = \"thosjleeper@gmail.com\",\n                    comment = c(ORCID = \"0000-0003-4097-6326\")),\n             person(\"Boettiger\", \"Carl\", role = \"ctb\"),\n             person(\"Andrew\", \"Martin\", role = \"ctb\"),\n             person(\"Mark\", \"Thompson\", role = \"ctb\"),\n             person(\"Tyler\", \"Hunt\", role = \"ctb\"),\n             person(\"Steven\", \"Akins\", role = \"ctb\"),\n             person(\"Bao\", \"Nguyen\", role = \"ctb\"),\n             person(\"Thierry\", \"Onkelinx\", role = \"ctb\"),\n             person(\"Andrii\", \"Degtiarov\", role = \"ctb\"),\n             person(\"Dhruv\", \"Aggarwal\", role = \"ctb\"),\n             person(\"Alyssa\", \"Columbus\", role = \"ctb\"),\n             person(\"Simon\", \"Urbanek\", role = c(\"cre\", \"ctb\"),\n                    email = \"simon.urbanek@R-project.org\")\n\t     )",
+        "Maintainer": "Simon Urbanek <simon.urbanek@R-project.org>",
+        "Description": "A simple client package for the Amazon Web Services ('AWS') Simple\n    Storage Service ('S3') 'REST' 'API' <https://aws.amazon.com/s3/>.",
+        "License": "GPL (>= 2)",
+        "URL": "https://github.com/cloudyr/aws.s3",
+        "BugReports": "https://github.com/cloudyr/aws.s3/issues",
+        "Encoding": "UTF-8",
+        "Imports": "utils, tools, curl, httr, xml2 (> 1.0.0), base64enc, digest,\naws.signature (>= 0.3.7)",
+        "Suggests": "testthat, datasets",
+        "RoxygenNote": "7.1.0",
+        "NeedsCompilation": "no",
+        "Packaged": "2025-08-18 23:50:23 UTC; rforge",
+        "Author": "Thomas J. Leeper [aut] (ORCID: <https://orcid.org/0000-0003-4097-6326>),\n  Boettiger Carl [ctb],\n  Andrew Martin [ctb],\n  Mark Thompson [ctb],\n  Tyler Hunt [ctb],\n  Steven Akins [ctb],\n  Bao Nguyen [ctb],\n  Thierry Onkelinx [ctb],\n  Andrii Degtiarov [ctb],\n  Dhruv Aggarwal [ctb],\n  Alyssa Columbus [ctb],\n  Simon Urbanek [cre, ctb]",
+        "Repository": "CRAN",
+        "Date/Publication": "2025-08-19 02:50:09 UTC",
+        "Built": "R 4.4.3; ; 2026-02-23 13:50:53 UTC; windows"
+      }
+    },
+    "aws.signature": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "aws.signature",
+        "Type": "Package",
+        "Title": "Amazon Web Services Request Signatures",
+        "Version": "0.6.0",
+        "Date": "2020-06-01",
+        "Authors@R": "c(person(\"Thomas J.\", \"Leeper\",\n                    role = c(\"aut\"),\n                    email = \"thosjleeper@gmail.com\",\n                    comment = c(ORCID = \"0000-0003-4097-6326\")),\n             person(\"Jonathan\", \"Stott\", email = \"jonathan.stott@magairports.com\", role = c(\"cre\", \"aut\")),\n             person(\"Mike\", \"Kaminsky\", email = \"kaminsky.michael@gmail.com\", role = \"ctb\")\n            )",
+        "Description": "Generates version 2 and version 4 request signatures for Amazon Web Services ('AWS') <https://aws.amazon.com/> Application Programming Interfaces ('APIs') and provides a mechanism for retrieving credentials from environment variables, 'AWS' credentials files, and 'EC2' instance metadata. For use on 'EC2' instances, users will need to install the suggested package 'aws.ec2metadata' <https://cran.r-project.org/package=aws.ec2metadata>.",
+        "License": "GPL (>= 2)",
+        "Imports": "digest, base64enc",
+        "Suggests": "testthat (>= 2.1.0), aws.ec2metadata (>= 0.1.6)",
+        "URL": "https://github.com/cloudyr/aws.signature",
+        "BugReports": "https://github.com/cloudyr/aws.signature/issues",
+        "RoxygenNote": "7.1.0",
+        "NeedsCompilation": "no",
+        "Packaged": "2020-06-01 09:51:14 UTC; jon_m",
+        "Author": "Thomas J. Leeper [aut] (<https://orcid.org/0000-0003-4097-6326>),\n  Jonathan Stott [cre, aut],\n  Mike Kaminsky [ctb]",
+        "Maintainer": "Jonathan Stott <jonathan.stott@magairports.com>",
+        "Repository": "CRAN",
+        "Date/Publication": "2020-06-01 10:10:02 UTC",
+        "Built": "R 4.4.3; ; 2026-02-23 12:20:14 UTC; windows"
+      }
+    },
     "backports": {
       "Source": "CRAN",
       "Repository": "https://cran.rstudio.com",
@@ -2269,36 +2321,6 @@
         "Built": "R 4.4.0; ; 2024-04-23 00:26:20 UTC; windows"
       }
     },
-    "gargle": {
-      "Source": "CRAN",
-      "Repository": "https://cran.rstudio.com",
-      "description": {
-        "Package": "gargle",
-        "Title": "Utilities for Working with Google APIs",
-        "Version": "1.6.1",
-        "Authors@R": "c(\n    person(\"Jennifer\", \"Bryan\", , \"jenny@posit.co\", role = c(\"aut\", \"cre\"),\n           comment = c(ORCID = \"0000-0002-6983-2759\")),\n    person(\"Craig\", \"Citro\", , \"craigcitro@google.com\", role = \"aut\"),\n    person(\"Hadley\", \"Wickham\", , \"hadley@posit.co\", role = \"aut\",\n           comment = c(ORCID = \"0000-0003-4757-117X\")),\n    person(\"Google Inc\", role = \"cph\"),\n    person(\"Posit Software, PBC\", role = c(\"cph\", \"fnd\"))\n  )",
-        "Description": "Provides utilities for working with Google APIs\n    <https://developers.google.com/apis-explorer>.  This includes\n    functions and classes for handling common credential types and for\n    preparing, executing, and processing HTTP requests.",
-        "License": "MIT + file LICENSE",
-        "URL": "https://gargle.r-lib.org, https://github.com/r-lib/gargle",
-        "BugReports": "https://github.com/r-lib/gargle/issues",
-        "Depends": "R (>= 4.1)",
-        "Imports": "cli (>= 3.0.1), fs (>= 1.3.1), glue (>= 1.3.0), httr (>=\n1.4.5), jsonlite, lifecycle (>= 0.2.0), openssl, rappdirs,\nrlang (>= 1.1.0), stats, utils, withr",
-        "Suggests": "aws.ec2metadata, aws.signature, covr, httpuv, knitr,\nrmarkdown, sodium, spelling, testthat (>= 3.1.7)",
-        "VignetteBuilder": "knitr",
-        "Config/Needs/website": "tidyverse/tidytemplate",
-        "Config/testthat/edition": "3",
-        "Encoding": "UTF-8",
-        "Language": "en-US",
-        "RoxygenNote": "7.3.3",
-        "NeedsCompilation": "no",
-        "Packaged": "2026-01-28 21:12:16 UTC; jenny",
-        "Author": "Jennifer Bryan [aut, cre] (ORCID:\n    <https://orcid.org/0000-0002-6983-2759>),\n  Craig Citro [aut],\n  Hadley Wickham [aut] (ORCID: <https://orcid.org/0000-0003-4757-117X>),\n  Google Inc [cph],\n  Posit Software, PBC [cph, fnd]",
-        "Maintainer": "Jennifer Bryan <jenny@posit.co>",
-        "Repository": "CRAN",
-        "Date/Publication": "2026-01-29 06:10:33 UTC",
-        "Built": "R 4.4.3; ; 2026-02-04 03:34:38 UTC; windows"
-      }
-    },
     "generics": {
       "Source": "CRAN",
       "Repository": "https://cran.rstudio.com",
@@ -2705,36 +2727,6 @@
         "Date/Publication": "2024-09-30 22:30:01 UTC",
         "Built": "R 4.4.2; x86_64-w64-mingw32; 2024-12-08 01:27:56 UTC; windows",
         "Archs": "x64"
-      }
-    },
-    "googledrive": {
-      "Source": "CRAN",
-      "Repository": "https://cran.rstudio.com",
-      "description": {
-        "Package": "googledrive",
-        "Title": "An Interface to Google Drive",
-        "Version": "2.1.2",
-        "Authors@R": "c(\n    person(\"Lucy\", \"D'Agostino McGowan\", , role = \"aut\"),\n    person(\"Jennifer\", \"Bryan\", , \"jenny@posit.co\", role = c(\"aut\", \"cre\"),\n           comment = c(ORCID = \"0000-0002-6983-2759\")),\n    person(\"Posit Software, PBC\", role = c(\"cph\", \"fnd\"))\n  )",
-        "Description": "Manage Google Drive files from R.",
-        "License": "MIT + file LICENSE",
-        "URL": "https://googledrive.tidyverse.org,\nhttps://github.com/tidyverse/googledrive",
-        "BugReports": "https://github.com/tidyverse/googledrive/issues",
-        "Depends": "R (>= 4.1)",
-        "Imports": "cli (>= 3.0.0), gargle (>= 1.6.0), glue (>= 1.4.2), httr,\njsonlite, lifecycle, magrittr, pillar (>= 1.9.0), purrr (>=\n1.0.1), rlang (>= 1.0.2), tibble (>= 2.0.0), utils, uuid, vctrs\n(>= 0.3.0), withr",
-        "Suggests": "curl, dplyr (>= 1.0.0), knitr, rmarkdown, spelling, testthat\n(>= 3.1.5)",
-        "VignetteBuilder": "knitr",
-        "Config/Needs/website": "tidyverse, tidyverse/tidytemplate",
-        "Config/testthat/edition": "3",
-        "Encoding": "UTF-8",
-        "Language": "en-US",
-        "RoxygenNote": "7.3.3",
-        "NeedsCompilation": "no",
-        "Packaged": "2025-09-10 06:10:03 UTC; jenny",
-        "Author": "Lucy D'Agostino McGowan [aut],\n  Jennifer Bryan [aut, cre] (ORCID:\n    <https://orcid.org/0000-0002-6983-2759>),\n  Posit Software, PBC [cph, fnd]",
-        "Maintainer": "Jennifer Bryan <jenny@posit.co>",
-        "Repository": "CRAN",
-        "Date/Publication": "2025-09-10 08:50:06 UTC",
-        "Built": "R 4.4.3; ; 2026-02-04 03:57:37 UTC; windows"
       }
     },
     "gridExtra": {
@@ -5345,29 +5337,6 @@
         "Archs": "x64"
       }
     },
-    "uuid": {
-      "Source": "CRAN",
-      "Repository": "https://cran.rstudio.com",
-      "description": {
-        "Package": "uuid",
-        "Version": "1.2-2",
-        "Title": "Tools for Generating and Handling of UUIDs",
-        "Author": "Simon Urbanek [aut, cre, cph] (https://urbanek.org, ORCID:\n    <https://orcid.org/0000-0003-2297-1732>),\n  Theodore Ts'o [aut, cph] (libuuid)",
-        "Maintainer": "Simon Urbanek <Simon.Urbanek@r-project.org>",
-        "Authors@R": "c(person(\"Simon\", \"Urbanek\", role=c(\"aut\",\"cre\",\"cph\"), email=\"Simon.Urbanek@r-project.org\", comment=c(\"https://urbanek.org\", ORCID=\"0000-0003-2297-1732\")), person(\"Theodore\",\"Ts'o\", email=\"tytso@thunk.org\", role=c(\"aut\",\"cph\"), comment=\"libuuid\"))",
-        "Depends": "R (>= 2.9.0)",
-        "Description": "Tools for generating and handling of UUIDs (Universally Unique Identifiers).",
-        "License": "MIT + file LICENSE",
-        "URL": "https://www.rforge.net/uuid",
-        "BugReports": "https://github.com/s-u/uuid/issues",
-        "NeedsCompilation": "yes",
-        "Packaged": "2026-01-23 00:09:28 UTC; rforge",
-        "Repository": "CRAN",
-        "Date/Publication": "2026-01-23 06:40:09 UTC",
-        "Built": "R 4.4.3; x86_64-w64-mingw32; 2026-01-26 00:51:11 UTC; windows",
-        "Archs": "x64"
-      }
-    },
     "vctrs": {
       "Source": "CRAN",
       "Repository": "https://cran.rstudio.com",
@@ -5661,8 +5630,8 @@
     }
   },
   "files": {
-    "app.R": {
-      "checksum": "0641462c9c0cb89bcb00f541a31035ae"
+    "MPS_allmodule.R": {
+      "checksum": "1d12626df30587cd148cd42d9b361547"
     }
   },
   "users": null

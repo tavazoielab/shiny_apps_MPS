@@ -21,32 +21,13 @@ library('doMC')
 organism = "org.Hs.eg.db"
 library(org.Hs.eg.db)
 
-#-- Library for rsconnet and google drive --#
+#-- Library for rsconnect and cloudflare R2 access --#
 
 library('rsconnect')
-library('googledrive')
 library('readr')
 library('httr')
 library('bslib')
-
-#--- Google drive authentication ---#
-# -- Run only one time to create .secrets file --#
-
-#options(gargle_oauth_cache = '.secrets')
-
-#check the value of the option, if you like
-#gargle::gargle_oauth_cache()
-#googledrive::drive_auth()
-#list.files('.secrets/')
-
-options(
-  gargle_oauth_cache = '.secrets',
-  gargle_oauth_email = 'tavazoie.ru.lab@gmail.com'
-  #gargle_oauth_email = 'simran27chhabria@gmail.com'
-)
-
-#drive_auth()
-
+library('aws.s3')
 
 tcga_key = list('AML'='aml', 'bladder'='blca', 'breast'='brca', 'cervical'='cesc', 
                 'colon'='coad', 'esophageal'='esca', 'GBM'='gbm', 'glioma'='glm', 
@@ -77,31 +58,67 @@ module_dict_reverse <- setNames(names(module_dict), module_dict)
 col_surv = rev(c(rgb(0.86, 0.2, 0.3, 0.75), rgb(0, 0.5, 1, 0.75)))
 quant_th = 0.1 ; MI_bins = 10
 
-#Define a function to read files from Google Drive
-read_drive_file <- function(file_name) {
-  
+# Configuration variables for Cloudflare R2
+R2_BUCKET <- "mps-shinyapp"
+R2_BASE_URL <- "f7a4dca465e33febe11c01f54163f284.r2.cloudflarestorage.com"
+R2_REGION <- "auto" # Cloudflare R2 uses 'auto' for the region
+
+# Function to read files from Cloudflare R2
+read_s3_file <- function(file_name) {
   file_type <- tools::file_ext(file_name)
-  #file_id <- file$id
-  
   temp_file <- tempfile(fileext = paste0(".", file_type))
-  drive_download(file_name, path = temp_file, overwrite = TRUE)
+  
+  # Download from R2 to temp file
+  aws.s3::save_object(
+    object = file_name,
+    bucket = R2_BUCKET,
+    file = temp_file,
+    region = R2_REGION,
+    base_url = R2_BASE_URL,
+    use_https = TRUE
+  )
   
   data <- switch(file_type,
-                 "csv" = read_csv(temp_file),
+                 "csv" = readr::read_csv(temp_file, show_col_types = FALSE),
                  "txt" = read.table(temp_file, header = TRUE, sep = "\t", quote = "\"", comment.char = ''),
                  "rds" = readRDS(temp_file),
                  stop("Unsupported file type"))
+  
   unlink(temp_file)
   return(data)
 }
 
-
-# Function to get gene info data from Google Drive
-get_gene_info_from_drive <- function(file_name) {
-  gene_info <- read_drive_file(file_name)
+# Function to get gene info data from Cloudflare R2
+get_gene_info_from_s3 <- function(file_name) {
+  gene_info <- read_s3_file(file_name)
   gene_info$Entrez.Gene.ID <- as.character(gene_info$Entrez.ID)
   gene_info_filt <- gene_info[which(gene_info$Entrez.Gene.ID != '' | gene_info$Approved.Symbol != ''), grep('Entrez|Approved.Symbol', colnames(gene_info))]
   return(gene_info_filt)
+}
+
+# Function to list files in a specific R2 directory (replaces missing list_files_from_s3)
+list_files_from_s3 <- function(prefix) {
+  # Ensure prefix ends with a slash for exact folder matching if needed
+  if (!endsWith(prefix, "/")) { prefix <- paste0(prefix, "/") }
+  
+  objects <- aws.s3::get_bucket(
+    bucket = R2_BUCKET,
+    prefix = prefix,
+    region = R2_REGION,
+    base_url = R2_BASE_URL,
+    use_https = TRUE
+  )
+  
+  # Extract the object keys (file paths)
+  keys <- sapply(objects, function(x) x$Key)
+  
+  # Extract just the filenames without the folder path
+  file_names <- basename(keys)
+  
+  # Remove the directory itself from the list if it gets returned
+  file_names <- file_names[file_names != "" & file_names != basename(prefix)]
+  
+  return(file_names)
 }
 
 gene_info_file_name <- "EntrezIDs_To_ApprovedSymbol_20221107.txt"
@@ -190,7 +207,7 @@ get_MPS_newModule <- function(input_genes, module_name = '', collection = 'tcga'
   
   #cont_genes = disc_genes = data.frame(gene = as.character(gene2module$Approved.Symbol))
   T_1 = Sys.time()
-  common_genes_set <- read_drive_file(common_genes_set_file_name)
+  common_genes_set <- read_s3_file(common_genes_set_file_name)
   g_set = common_genes_set#readRDS(paste(parent_dir, 'shiny_test/data/common_TCGA_genes_rds', sep=''))
   inp_g = toupper(as.character(input_genes[,1]))
   
@@ -222,8 +239,8 @@ get_MPS_newModule <- function(input_genes, module_name = '', collection = 'tcga'
     #con_g = readRDS(paste(parent_dir, 'data/', 'disease_gene_expression/', collection, '/', d_t, '_quant_', quant_th, '_primary_zscore.rds', sep=''))
     #dis_g = readRDS(paste(parent_dir, 'data/', 'disease_gene_expression/', collection, '/', d_t, '_quant_', quant_th, '_primary_zscore_bins.rds', MI_bins, sep=''))
     
-    con_g = read_drive_file(con_g_name)
-    dis_g = read_drive_file(dis_g_name)
+    con_g = read_s3_file(con_g_name)
+    dis_g = read_s3_file(dis_g_name)
     rownames(con_g) = as.character(con_g$gene) ; con_g = con_g[,-grep('gene', colnames(con_g))]
     rownames(dis_g) = as.character(dis_g$gene) ; dis_g = dis_g[,-grep('gene', colnames(dis_g))]
     
@@ -256,7 +273,7 @@ get_MPS_newModule <- function(input_genes, module_name = '', collection = 'tcga'
     #d_clin = readRDS(paste(parent_dir, 'data/', 'disease_clinical/', collection, '/', d_t, '_clinical_primary_forMPS.rds', sep=''))
     
     d_clin_name = paste0(d_t, '_clinical_primary_forMPS.rds')
-    d_clin = read_drive_file(d_clin_name)
+    d_clin = read_s3_file(d_clin_name)
     
     s_p = samps[which(d_mps$MPS > ((1)*MPS_thresh))] ; s_n = samps[which(d_mps$MPS < ((-1)*MPS_thresh))]
     tmp_df_p = data.frame(SAMPLE_ID = s_p) ; tmp_df_p$group = 'MPS+' ; tmp_df_p$MPS_groups = 'MPS+'
@@ -333,7 +350,7 @@ get_MPS_existingModule <- function(module_cat,module_type,RBP,log_value="1",pval
   if (select_cohorts == 'full') { coh_list = names(tcga_key) }
   if (select_cohorts != 'full') { coh_list = intersect(select_cohorts, names(tcga_key)) }
   
-  common_genes_set <- read_drive_file(common_genes_set_file_name)
+  common_genes_set <- read_s3_file(common_genes_set_file_name)
   g_set = common_genes_set
   print(module_cat)
   if (module_cat == "RBPECLIP") {
@@ -345,7 +362,7 @@ get_MPS_existingModule <- function(module_cat,module_type,RBP,log_value="1",pval
   }
   
   print(RBP)
-  data_RDS <- read_drive_file(module_name)
+  data_RDS <- read_s3_file(module_name)
   data_gene <- data_RDS[["genes"]]
   inp_g <- strsplit(data_gene, "\\|")[[1]]
   
@@ -374,8 +391,8 @@ get_MPS_existingModule <- function(module_cat,module_type,RBP,log_value="1",pval
     con_g_name = paste0(d_t, '_quant_', quant_th, '_primary_zscore.rds')
     dis_g_name = paste0(d_t, '_quant_', quant_th, '_primary_zscore_bins', MI_bins,'.rds')
     
-    con_g = read_drive_file(con_g_name)
-    dis_g = read_drive_file(dis_g_name)
+    con_g = read_s3_file(con_g_name)
+    dis_g = read_s3_file(dis_g_name)
     #con_g = readRDS(paste(parent_dir, 'data/', 'disease_gene_expression/', collection, '/', d_t, '_quant_', quant_th, '_primary_zscore', sep=''))
     #dis_g = readRDS(paste(parent_dir, 'data/', 'disease_gene_expression/', collection, '/', d_t, '_quant_', quant_th, '_primary_zscore_bins', MI_bins, sep=''))
     rownames(con_g) = as.character(con_g$gene) ; con_g = con_g[,-grep('gene', colnames(con_g))]
@@ -408,7 +425,7 @@ get_MPS_existingModule <- function(module_cat,module_type,RBP,log_value="1",pval
     samps = as.character(d_mps$SAMPLE_ID)
     
     d_clin_name = paste0(d_t, '_clinical_primary_forMPS.rds')
-    d_clin = read_drive_file(d_clin_name)
+    d_clin = read_s3_file(d_clin_name)
     #d_clin = readRDS(paste(parent_dir, 'data/', 'disease_clinical/', collection, '/', d_t, '_clinical_primary_forMPS', sep=''))
     
     
@@ -442,7 +459,7 @@ plot_moduleGenes <- function(clin_data) {
   name_module = as.character(unique(all_clin$module_name)) ; name_module_trim = strtrim(name_module, 14)
   genes_in_module = (unlist(strsplit(as.character(unique(all_clin$genes_in_mod)), '\\|')))
   num_genes_in_module = length(genes_in_module)
-  gene_info_filt <- get_gene_info_from_drive(gene_info_file_name)
+  gene_info_filt <- get_gene_info_from_s3(gene_info_file_name)
   ez_ids = unique(as.character(merge(gene_info_filt, data.frame(Approved.Symbol = genes_in_module))$Entrez.Gene.ID))
   ez_ids <- unique(as.character(merge(gene_info_filt, data.frame(Approved.Symbol = genes_in_module))$Entrez.Gene.ID))
   
@@ -868,11 +885,11 @@ server <- function(input, output,session) {
     if (internal_value %in% c('RBPECLIP', 'RBPCRISPR', 'RBPshRNA')) {
       req(input$module_type_inp)
       file_dir <- file.path(parent_dir, internal_value, isolate(input$module_type_inp))
-      files <- list_files_from_drive(file_dir)
+      files <- list_files_from_s3(file_dir)
       rbp_values <- files
     } else if (!(internal_value %in% c('RBPECLIP', 'RBPCRISPR', 'RBPshRNA'))) {
       module_name <- paste0(internal_value, ".rds")
-      module_list <- read_drive_file(paste0(module_name))  
+      module_list <- read_s3_file(paste0(module_name))  
       module_names <- module_list  # Assuming module_list is a list with module names
       rbp_values <- module_names
     }
