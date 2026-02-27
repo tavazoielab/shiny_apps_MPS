@@ -290,7 +290,6 @@ calculateMI_v2 <- function(x, y) {
 #'   Returns \code{NA} if survival data are entirely missing.
 getSurv_shiny <- function(all_clin_df, surv_type = 'OS', rand_iter = 1000,
                           samp_name = 'MPS+', ctrl_name = 'MPS-') {
-  library('survival')
   all_clin <- all_clin_df
   s_name   <- samp_name
   c_name   <- ctrl_name
