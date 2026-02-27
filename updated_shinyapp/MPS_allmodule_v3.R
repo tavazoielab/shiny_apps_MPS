@@ -34,10 +34,12 @@ library('survminer')    # ggsurvplot, ggforest
 library('survival')     # Surv, survfit, survdiff, coxph
 library('shiny')        # Shiny application framework
 library('ggplot2')      # Grammar-of-graphics plotting
+library('forcats')      # Rearranging factors in plots
 library('gridExtra')    # grid.arrange for multi-panel layouts
-library('enrichplot')   # Enrichment result dotplot
 library('grid')         # Low-level grid graphics (nullGrob)
-library('clusterProfiler') # enrichGO – Gene Ontology over-representation
+library('topGO')        # For computation of pathway enrichment
+library('GO.db')        # To get pathways for pathway enrichment
+library("org.Hs.eg.db") # Human annotations for pathway enrichment
 
 # --- HTML output & report generation ---
 library('htmltools')    # HTML tag helpers for Shiny renderText / renderUI
@@ -47,10 +49,6 @@ library('rmarkdown')    # render() for downloadable HTML reports
 # --- Parallel computation ---
 library('foreach')      # foreach() %dopar% loop syntax
 library('doMC')         # Multicore backend for foreach (registerDoMC)
-
-# --- Human gene annotation database ---
-organism <- "org.Hs.eg.db"   # Bioconductor annotation package identifier
-library(org.Hs.eg.db)        # Required by enrichGO for Homo sapiens
 
 # --- Cloud storage & connectivity ---
 library('rsconnect')    # Deploy app to shinyapps.io / Posit Connect
@@ -216,7 +214,6 @@ get_gene_info_from_r2 <- function(file_name) {
   ]
   return(gene_info_filt)
 }
-
 
 # =============================================================================
 # 5. CORE ANALYTICAL FUNCTIONS
@@ -897,8 +894,7 @@ get_MPS_existingModule <- function(module_cat, module_type, RBP,
 
 #' GO Biological Process enrichment analysis for module genes
 #'
-#' Maps module gene symbols to Entrez IDs, runs \code{clusterProfiler::enrichGO}
-#' (BP ontology, FDR-adjusted), and returns a dotplot plus metadata.
+#' Runs fgsea-based pathway analysis on msigdbr's GO:BP pathways and returns a dotplot plus metadata.
 #'
 #' @param clin_data data.frame. Clinical data output from the MPS functions;
 #'   must contain columns \code{genes_in_mod}, \code{module_id},
@@ -908,7 +904,7 @@ get_MPS_existingModule <- function(module_cat, module_type, RBP,
 #'     \item \code{pl_enrich}       – ggplot dotplot (or NULL if no enrichment).
 #'     \item \code{num_genes}       – number of module genes in the common set.
 #'     \item \code{name_module}     – module display name.
-#'     \item \code{enr_go}          – enrichResult object from enrichGO.
+#'     \item \code{topgo_dat}          – raw output of topGO.
 #'     \item \code{genes_in_module} – character vector of module gene symbols.
 #'   }
 plot_moduleGenes <- function(clin_data) {
@@ -920,37 +916,49 @@ plot_moduleGenes <- function(clin_data) {
 
   genes_in_module     <- unlist(strsplit(as.character(unique(all_clin$genes_in_mod)), '\\|'))
   num_genes_in_module <- length(genes_in_module)
-
-  # Convert approved gene symbols to Entrez IDs for GO enrichment.
-  gene_info_filt <- get_gene_info_from_r2(gene_info_file_name)
-  ez_ids <- unique(as.character(
-    merge(gene_info_filt, data.frame(Approved.Symbol = genes_in_module))$Entrez.Gene.ID
-  ))
-
-  # Return NULL plot with metadata if no Entrez IDs can be mapped.
-  if (length(ez_ids) == 0) {
-    return(list(NULL, num_genes_in_module, name_module, NULL, genes_in_module))
-  }
+  universe            <- read_r2_file(common_genes_set_file_name)
 
   # Run GO Biological Process over-representation analysis.
-  enr_go <- enrichGO(
-    gene          = ez_ids,
-    organism,
-    pAdjustMethod = "fdr",
-    ont           = 'BP',
-    pvalueCutoff  = 1e-3,
-    minGSSize     = 30,
-    maxGSSize     = 5000
-  )
+  geneList <- factor(as.integer(universe %in% genes_in_module))
+  names(geneList) <- universe
 
-  if (is.null(enr_go) || nrow(enr_go@result) == 0) {
+  topgo_obj <- new("topGOdata",
+    description = "Module Overrepresentation",
+    ontology = "BP",              
+    allGenes = geneList,
+    annot = annFUN.org,
+    mapping = "org.Hs.eg.db",
+    ID = "symbol")
+
+  resultFisher <- runTest(topgo_obj, algorithm = "classic", statistic = "fisher")
+  resultElim <- runTest(topgo_obj, algorithm = "elim", statistic = "fisher")
+
+  allRes <- GenTable(topgo_obj, 
+                   classicFisher = resultFisher, 
+                   elimFisher = resultElim,
+                   orderBy = "elimFisher", 
+                   ranksOf = "classicFisher", 
+                   topNodes = length(usedGO(topgo_obj)))
+  
+
+  if (is.null(allRes) || nrow(allRes) == 0) {
     pl_enrich <- NULL   # No significant GO terms found
   } else {
     # Dotplot showing top 15 GO terms ordered by gene count.
-    pl_enrich <- enrichplot::dotplot(enr_go, x = 'count', showCategory = 15)
+    pl_enrich <- allRes %>% 
+      head(n=15) %>%
+      mutate(logp = -log10(as.numeric(elimFisher))) %>%
+      mutate(Term = fct_reorder(Term, logp)) %>%
+      ggplot(., aes(x = -log10(as.numeric(elimFisher)), y = Term)) +
+      geom_vline(xintercept = -log10(0.05), linetype = "dashed", color = "red") +
+      geom_segment(aes(xend = 0, yend = Term)) +
+      geom_point(shape = 21, aes(fill = 1/`Rank in classicFisher`, size = Annotated)) +
+      scale_fill_distiller(palette = "Reds", direction = 1) +
+      theme_classic(base_size = 12) +
+      labs(x = "Log-10 Adjusted P-Value", y = "Term", fill = "Rank\nScore", size = "Pathway\nSize")
   }
 
-  val_ret <- list(pl_enrich, num_genes_in_module, name_module, enr_go, genes_in_module)
+  val_ret <- list(pl_enrich, num_genes_in_module, name_module, allRes, genes_in_module)
   return(val_ret)
 }
 
@@ -1461,7 +1469,9 @@ ui <- fluidPage(
         # Module Info: gene list, count, and GO enrichment dotplot.
         tabPanel("Module Info (Genes)",
                  htmlOutput('module_info'),
-                 verbatimTextOutput('volc_info')),
+                 downloadButton("downloadGO",
+                                "Download full TopGO result"),
+                 plotOutput("geneEnrichPlot", height = "400px")),
 
         # Clinical Data: summary stats and downloadable patient table.
         tabPanel("Clinical Data",
@@ -1598,6 +1608,7 @@ server <- function(input, output, session) {
       # Bundle all plots into a named list for reactive storage.
       plot_data_list <- list(
         geneEnrichPlot = pl[[1]],    # GO enrichment dotplot
+        topGOres       = pl[[4]],    # topGO all results object
         moduleInfo     = pl[[3]],    # enrichResult object
         geneCount      = pl[[2]],    # Number of genes in module
         genes          = pl[[5]],    # Gene symbol vector
@@ -1678,6 +1689,7 @@ server <- function(input, output, session) {
 
         plot_data_list <- list(
           geneEnrichPlot = pl[[1]],
+          topGOres       = pl[[4]],
           moduleInfo     = pl[[3]],
           geneCount      = pl[[2]],
           genes          = pl[[5]],
@@ -1782,11 +1794,11 @@ server <- function(input, output, session) {
     plot(pl$geneEnrichPlot)
   }, height = 600, width = 900)
 
-  output$download_geneEnrichPlot <- downloadHandler(
-    filename = function() { "gene_enrichment_plot.pdf" },
+  output$downloadGO <- downloadHandler(
+    filename = function() { "topGO_data.csv" },
     content  = function(file) {
-      pl <- plot_data()
-      if (!is.null(pl$geneEnrichPlot)) { ggsave(file, pl$geneEnrichPlot) }
+      x <- plot_data()$topGOres
+      write.csv(x, file, row.names = FALSE)
     }
   )
 

@@ -2275,6 +2275,36 @@
         "Built": "R 4.4.3; ; 2025-04-07 01:30:14 UTC; windows"
       }
     },
+    "forcats": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "forcats",
+        "Title": "Tools for Working with Categorical Variables (Factors)",
+        "Version": "1.0.1",
+        "Authors@R": "c(\n    person(\"Hadley\", \"Wickham\", , \"hadley@posit.co\", role = c(\"aut\", \"cre\")),\n    person(\"Posit Software, PBC\", role = c(\"cph\", \"fnd\"),\n           comment = c(ROR = \"03wc8by49\"))\n  )",
+        "Description": "Helpers for reordering factor levels (including moving\n    specified levels to front, ordering by first appearance, reversing,\n    and randomly shuffling), and tools for modifying factor levels\n    (including collapsing rare levels into other, 'anonymising', and\n    manually 'recoding').",
+        "License": "MIT + file LICENSE",
+        "URL": "https://forcats.tidyverse.org/,\nhttps://github.com/tidyverse/forcats",
+        "BugReports": "https://github.com/tidyverse/forcats/issues",
+        "Depends": "R (>= 4.1)",
+        "Imports": "cli (>= 3.4.0), glue, lifecycle, magrittr, rlang (>= 1.0.0),\ntibble",
+        "Suggests": "covr, dplyr, ggplot2, knitr, readr, rmarkdown, testthat (>=\n3.0.0), withr",
+        "VignetteBuilder": "knitr",
+        "Config/Needs/website": "tidyverse/tidytemplate",
+        "Config/testthat/edition": "3",
+        "Encoding": "UTF-8",
+        "LazyData": "true",
+        "RoxygenNote": "7.3.3",
+        "NeedsCompilation": "no",
+        "Packaged": "2025-09-24 17:08:21 UTC; hadleywickham",
+        "Author": "Hadley Wickham [aut, cre],\n  Posit Software, PBC [cph, fnd] (ROR: <https://ror.org/03wc8by49>)",
+        "Maintainer": "Hadley Wickham <hadley@posit.co>",
+        "Repository": "CRAN",
+        "Date/Publication": "2025-09-25 05:10:20 UTC",
+        "Built": "R 4.4.3; ; 2025-11-10 04:03:08 UTC; windows"
+      }
+    },
     "foreach": {
       "Source": "CRAN",
       "Repository": "https://cran.rstudio.com",
@@ -2969,6 +2999,39 @@
         "Repository": "CRAN",
         "Date/Publication": "2025-09-03 23:20:02 UTC",
         "Built": "R 4.4.3; ; 2026-02-04 04:27:15 UTC; windows"
+      }
+    },
+    "graph": {
+      "Source": "Bioconductor",
+      "Repository": "https://bioconductor.org/packages/3.20/bioc",
+      "description": {
+        "Package": "graph",
+        "Title": "graph: A package to handle graph data structures",
+        "Version": "1.84.1",
+        "Authors@R": "c(\n        person(\"R\", \"Gentleman\", role = \"aut\"),\n        person(\"Elizabeth\", \"Whalen\", role=\"aut\"),\n        person(\"W\", \"Huber\", role=\"aut\"),\n        person(\"S\", \"Falcon\", role=\"aut\"),\n        person(\"Jeff\", \"Gentry\", role=\"aut\"),\n        person(\"Paul\", \"Shannon\", role=\"aut\"),\n        person(\"Halimat C.\", \"Atanda\", role = \"ctb\",\n                comment = \"Converted 'MultiGraphClass' and 'GraphClass' vignettes from Sweave to RMarkdown / HTML.\"\n        ),   \n        person(\"Paul\", \"Villafuerte\", role = \"ctb\",\n                comment = \"Converted vignettes from Sweave to RMarkdown / HTML.\"\n        ),\n        person(\"Aliyu Atiku\", \"Mustapha\", role = \"ctb\",\n                comment = \"Converted 'Graph' vignette from Sweave to RMarkdown / HTML.\"\n        ),\n        person(\"Bioconductor Package Maintainer\", role = \"cre\",\n                email = \"maintainer@bioconductor.org\"\n        ))",
+        "Description": "A package that implements some simple graph handling\n        capabilities.",
+        "License": "Artistic-2.0",
+        "Depends": "R (>= 2.10), methods, BiocGenerics (>= 0.13.11)",
+        "Imports": "stats, stats4, utils",
+        "Suggests": "SparseM (>= 0.36), XML, RBGL, RUnit, cluster, BiocStyle,\nknitr",
+        "Enhances": "Rgraphviz",
+        "Collate": "AllClasses.R AllGenerics.R bitarray.R buildDepGraph.R\nmethods-graph.R graphNEL.R clustergraph.R NELhandler.R\nedgefunctions.R graphfunctions.R GXLformals.R gxlReader.R\nrandom.R write.tlp.R mat2graph.R settings.R zzz.R\nstandardLabeling.R TODOT.R toDotWithRI.R methods-graphAM.R\nattrData.R reverseEdgeDirections.R nodes-methods.R\nmethods-multiGraph.R MultiGraph.R methods-graphBAM.R\ngraph-constructors.R",
+        "LazyLoad": "yes",
+        "Packaged": "2025-01-03 00:27:54 UTC; biocbuild",
+        "biocViews": "GraphAndNetwork",
+        "RoxygenNote": "7.2.3",
+        "VignetteBuilder": "knitr",
+        "git_url": "https://git.bioconductor.org/packages/graph",
+        "git_branch": "RELEASE_3_20",
+        "git_last_commit": "41ac6e9",
+        "git_last_commit_date": "2024-12-30",
+        "Repository": "Bioconductor 3.20",
+        "Date/Publication": "2025-01-02",
+        "NeedsCompilation": "yes",
+        "Author": "R Gentleman [aut],\n  Elizabeth Whalen [aut],\n  W Huber [aut],\n  S Falcon [aut],\n  Jeff Gentry [aut],\n  Paul Shannon [aut],\n  Halimat C. Atanda [ctb] (Converted 'MultiGraphClass' and 'GraphClass'\n    vignettes from Sweave to RMarkdown / HTML.),\n  Paul Villafuerte [ctb] (Converted vignettes from Sweave to RMarkdown /\n    HTML.),\n  Aliyu Atiku Mustapha [ctb] (Converted 'Graph' vignette from Sweave to\n    RMarkdown / HTML.),\n  Bioconductor Package Maintainer [cre]",
+        "Maintainer": "Bioconductor Package Maintainer <maintainer@bioconductor.org>",
+        "Built": "R 4.4.2; x86_64-w64-mingw32; 2025-01-03 13:26:33 UTC; windows",
+        "Archs": "x64"
       }
     },
     "gridExtra": {
@@ -3832,6 +3895,34 @@
         "Repository": "CRAN",
         "Date/Publication": "2025-03-23 19:30:03 UTC",
         "Built": "R 4.4.3; ; 2026-02-23 13:24:23 UTC; windows"
+      }
+    },
+    "matrixStats": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "matrixStats",
+        "Version": "1.5.0",
+        "Depends": "R (>= 3.4.0)",
+        "Suggests": "utils, base64enc, ggplot2, knitr, markdown, microbenchmark,\nR.devices, R.rsp",
+        "VignetteBuilder": "R.rsp",
+        "Title": "Functions that Apply to Rows and Columns of Matrices (and to\nVectors)",
+        "Authors@R": "c(\n  person(\"Henrik\", \"Bengtsson\", role=c(\"aut\", \"cre\", \"cph\"),\n                                 email=\"henrikb@braju.com\"),\n  person(\"Constantin\", \"Ahlmann-Eltze\", role = \"ctb\"),\n  person(\"Hector\", \"Corrada Bravo\", role=\"ctb\"),\n  person(\"Robert\", \"Gentleman\", role=\"ctb\"),\n  person(\"Jan\", \"Gleixner\", role=\"ctb\"),\n  person(\"Peter\", \"Hickey\", role=\"ctb\"),\n  person(\"Ola\", \"Hossjer\", role=\"ctb\"),\n  person(\"Harris\", \"Jaffee\", role=\"ctb\"),\n  person(\"Dongcan\", \"Jiang\", role=\"ctb\"),\n  person(\"Peter\", \"Langfelder\", role=\"ctb\"),\n  person(\"Brian\", \"Montgomery\", role=\"ctb\"),\n  person(\"Angelina\", \"Panagopoulou\", role=\"ctb\"),\n  person(\"Hugh\", \"Parsonage\", role=\"ctb\"),\n  person(\"Jakob Peder\", \"Pettersen\", role=\"ctb\"))",
+        "Author": "Henrik Bengtsson [aut, cre, cph],\n  Constantin Ahlmann-Eltze [ctb],\n  Hector Corrada Bravo [ctb],\n  Robert Gentleman [ctb],\n  Jan Gleixner [ctb],\n  Peter Hickey [ctb],\n  Ola Hossjer [ctb],\n  Harris Jaffee [ctb],\n  Dongcan Jiang [ctb],\n  Peter Langfelder [ctb],\n  Brian Montgomery [ctb],\n  Angelina Panagopoulou [ctb],\n  Hugh Parsonage [ctb],\n  Jakob Peder Pettersen [ctb]",
+        "Maintainer": "Henrik Bengtsson <henrikb@braju.com>",
+        "Description": "High-performing functions operating on rows and columns of matrices, e.g. col / rowMedians(), col / rowRanks(), and col / rowSds().  Functions optimized per data type and for subsetted calculations such that both memory usage and processing time is minimized.  There are also optimized vector-based methods, e.g. binMeans(), madDiff() and weightedMedian().",
+        "License": "Artistic-2.0",
+        "LazyLoad": "TRUE",
+        "NeedsCompilation": "yes",
+        "ByteCompile": "TRUE",
+        "URL": "https://github.com/HenrikBengtsson/matrixStats",
+        "BugReports": "https://github.com/HenrikBengtsson/matrixStats/issues",
+        "RoxygenNote": "7.3.2",
+        "Packaged": "2025-01-07 17:25:20 UTC; henrik",
+        "Repository": "CRAN",
+        "Date/Publication": "2025-01-07 19:50:02 UTC",
+        "Built": "R 4.4.2; x86_64-w64-mingw32; 2025-01-25 02:07:47 UTC; windows",
+        "Archs": "x64"
       }
     },
     "maxstat": {
@@ -5635,6 +5726,35 @@
         "Built": "R 4.4.3; ; 2026-02-23 13:04:21 UTC; windows"
       }
     },
+    "topGO": {
+      "Source": "Bioconductor",
+      "Repository": "https://bioconductor.org/packages/3.20/bioc",
+      "description": {
+        "Package": "topGO",
+        "Type": "Package",
+        "Title": "Enrichment Analysis for Gene Ontology",
+        "Version": "2.58.0",
+        "Date": "2016-02-03",
+        "Author": "Adrian Alexa, Jorg Rahnenfuhrer",
+        "Maintainer": "Adrian Alexa <adrian.alexa@gmail.com>",
+        "Description": "topGO package provides tools for testing GO terms while\n        accounting for the topology of the GO graph. Different test\n        statistics and different methods for eliminating local\n        similarities and dependencies between GO terms can be\n        implemented and applied.",
+        "License": "LGPL",
+        "Depends": "R (>= 2.10.0), methods, BiocGenerics (>= 0.13.6), graph (>=\n1.14.0), Biobase (>= 2.0.0), GO.db (>= 2.3.0), AnnotationDbi\n(>= 1.7.19), SparseM (>= 0.73)",
+        "Imports": "lattice, matrixStats, DBI",
+        "Suggests": "ALL, hgu95av2.db, hgu133a.db, genefilter, xtable, multtest,\nRgraphviz, globaltest",
+        "Collate": "AllClasses.R topGOmethods.R topGOgraph.R topGOalgo.R\ntopGOfunctions.R topGOannotations.R topGOtests.R topGOviz.R\nzzz.R",
+        "biocViews": "Microarray, Visualization",
+        "git_url": "https://git.bioconductor.org/packages/topGO",
+        "git_branch": "RELEASE_3_20",
+        "git_last_commit": "fdfc42c",
+        "git_last_commit_date": "2024-10-29",
+        "Repository": "Bioconductor 3.20",
+        "Date/Publication": "2024-10-29",
+        "NeedsCompilation": "no",
+        "Packaged": "2024-10-30 06:10:06 UTC; biocbuild",
+        "Built": "R 4.4.1; ; 2024-10-30 16:57:01 UTC; windows"
+      }
+    },
     "treeio": {
       "Source": "Bioconductor",
       "Repository": "https://bioconductor.org/packages/3.20/bioc",
@@ -6376,7 +6496,7 @@
       "checksum": "242edb22752911cdbb0db665f7b8c913"
     },
     "app.R": {
-      "checksum": "f5a7c57de8e1a1455505fe6b6370af0a"
+      "checksum": "ed527321b1357b604cce5750edf9133e"
     },
     "AWS_Key.csv": {
       "checksum": "8204e9c3aa2be46e0b3a9033c4660b62"
